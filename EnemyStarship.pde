@@ -10,8 +10,7 @@ int ENEMY_DAMAGE = 10;
 
 
 class EnemyStarship extends Starship{  
-  private int healthTiming = 0;
-  private int shieldTiming = 0;
+  private int damageTiming = 0;
   
   public EnemyStarship(int health, int shield){
     super(health, shield);
@@ -33,19 +32,17 @@ class EnemyStarship extends Starship{
   
   @Override
   public boolean setDamage(int damage){
+    damageTiming = 5;
     if(getShield() < damage && getShield() > 0){
       setShield(0);
-      shieldTiming = 5;
     } else if(getShield() == 0){
       if(getHealth() <= damage){
         return true;
       } else{
         setHealth(getHealth() - damage);
-        healthTiming = 5;
       }
     } else{
       setShield(getShield() - damage);
-      shieldTiming = 5;
     }
     return false;
   }
@@ -66,17 +63,13 @@ class EnemyStarship extends Starship{
     translate(getPosX(), getPosY(), getPosZ());
     rotateZ(PI);
     rotateY(PI/2);
-    if( healthTiming > 0 ){
-      //hint(DISABLE_DEPTH_TEST);
-      shape(HEALTH_DAMAGE_MODEL);  
-      //hint(ENABLE_DEPTH_TEST);
-      healthTiming--;
-    }
-    if( getShield() > 0 ){
-      //hint(DISABLE_DEPTH_TEST);
+    if( damageTiming == 0 && getShield() > 0 ){
       shape(SHIELD_DAMAGE_MODEL);
-      //hint(ENABLE_DEPTH_TEST);
-      shieldTiming--;
+    }else if(damageTiming > 0 && getShield() > 0){
+      damageTiming--;
+    }else if(damageTiming > 0 && getShield() == 0){
+      shape(HEALTH_DAMAGE_MODEL);  
+      damageTiming--;
     }
     popMatrix();
     return true;
