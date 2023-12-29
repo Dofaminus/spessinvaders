@@ -33,9 +33,9 @@ float SENSITIVITY_Y = 30f;
 boolean IS_CINEMATOGRAPHIC_CAMERA = true;
 int NUMBER_OF_WAVES = 2;
 
-float LOD1_DISTANCE = 100.0f;
-float LOD2_DISTANCE = 400.0f;
-float LOD3_DISTANCE = 5000.0f;
+float LOD1_DISTANCE = 50.0f;
+float LOD2_DISTANCE = 200.0f;
+float LOD3_DISTANCE = 3000000.0f;
 
 color PLAYER_BULLET_COLOR = color(0, 255, 0);
 color ENEMY_BULLET_COLOR = color(255, 0, 0);
@@ -218,6 +218,8 @@ class Main{
 Main main;
 
 void setup(){
+  HEIGHT = height;
+  WIDTH = width;
   readConfig();
   Minim minim = new Minim(this);
   fullScreen(P3D);

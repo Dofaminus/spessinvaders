@@ -13,7 +13,7 @@ class Control{
       device = control.getDevice(DEVICE_NAME);
       sliderLeftX = device.getSlider("x");
       sliderLeftY = device.getSlider("y");
-      buttonX = device.getButton("X");
+      buttonX = device.getButton("A");
     } catch(RuntimeException re){
       DEVICE = Device.MOUSE;
     }

@@ -67,15 +67,15 @@ class EnemyStarship extends Starship{
     rotateZ(PI);
     rotateY(PI/2);
     if( healthTiming > 0 ){
-      hint(DISABLE_DEPTH_TEST);
+      //hint(DISABLE_DEPTH_TEST);
       shape(HEALTH_DAMAGE_MODEL);  
-      hint(ENABLE_DEPTH_TEST);
+      //hint(ENABLE_DEPTH_TEST);
       healthTiming--;
     }
-    if( shieldTiming > 0 ){
-      hint(DISABLE_DEPTH_TEST);
+    if( getShield() > 0 ){
+      //hint(DISABLE_DEPTH_TEST);
       shape(SHIELD_DAMAGE_MODEL);
-      hint(ENABLE_DEPTH_TEST);
+      //hint(ENABLE_DEPTH_TEST);
       shieldTiming--;
     }
     popMatrix();

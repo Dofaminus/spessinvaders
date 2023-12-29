@@ -3,11 +3,10 @@
   private int OFFSET_X = -10;
   private int OFFSET_Y = 10;
   private float maxX, maxY;
-  private int enemyCount; 
   
   public WaveGenerator(int maxX, int maxY) {
-    this.maxX = (float) maxX;
-    this.maxY = (float) maxY;
+    this.maxX = (float) abs(maxX) > abs(maxY)? maxY * Math.signum(maxX) : maxX;
+    this.maxY = (float) abs(maxX) > abs(maxY)? maxY : Math.signum(maxY) * maxX;
   }
   
   public List<Starship> Generator(int enemyCount){
