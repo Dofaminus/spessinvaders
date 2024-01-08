@@ -82,6 +82,55 @@ class ExplosionEffect{
   } 
 }
 
+class UIInfo{
+  private Starship starship;
+  private List<List<Starship>> enemies;
+  private int enemiesNumber;
+  
+  public UIInfo(Starship starship, List<List<Starship>> enemies){
+    this.starship = starship;
+    this.enemies = enemies;
+    this.enemiesNumber = getEnemiesNumber();
+  }
+  
+  private int getEnemiesNumber(){
+    int enemiesNum = 0;
+    //if(enemies == null){
+    //  return 0;
+    //}
+    for(List<Starship> starships : enemies){
+      enemiesNum += starships.size();
+    }
+    return enemiesNum;
+  }
+  
+  public void display(float x, float y, float z){
+    int playerShield = starship.getShield();
+    int playerHealth = starship.getHealth();
+   
+    String uiBar = "Health: " + playerHealth + "     Shield: " + playerShield;
+    String uiEnemiesKilled = "Killed: " + (enemiesNumber - getEnemiesNumber());
+    String uiEnemiesLeft = "Left: " + getEnemiesNumber();
+    
+    pushMatrix();
+    rotateY(PI);
+    textSize(180);
+    hint(DISABLE_DEPTH_TEST);
+
+    
+    fill(255, 255, 255);
+
+    text(uiEnemiesLeft + "\n" + uiEnemiesKilled, - x - 1.9 * width, - 1.8 * height + y, - 2 * height);
+
+    if(playerHealth < 20)
+      fill(225, 0, 0);
+    
+    text(uiBar, - x - 1.9 * width, + 1.8 * height + y, - 2 * height);
+    hint(ENABLE_DEPTH_TEST);
+    popMatrix();
+  }
+}
+
 int TIMING_SCAN_MODE = 2;
 int TIMING_LOCATING = 20;
 int TIMING_RECEIVING = 23;
@@ -103,7 +152,7 @@ class PreparingInfo{
     translate(x, y, z);
     rotateY(PI);
     textSize(240);
-    textAlign(CENTER, CENTER);  
+    //textAlign(CENTER, CENTER);  
     hint(DISABLE_DEPTH_TEST);
     text("word", 100, 100);
     fill(0, 408, 612, 816);

@@ -2,8 +2,9 @@ class Background{
   private BackgroundCamera bgCamera;
   private List<Planet> planets;
   
-  private PShape skyBoxModel;
-  private PImage skyBoxTexture;
+  private PShape skySphereModel;
+  private PImage skySphereTexture;
+  
   private float skyBoxSize = 80000f;
 
   private PShape starModel;
@@ -24,10 +25,10 @@ class Background{
   public Background(List<Planet> planets){
     this.planets = planets;
     
-    skyBoxModel = loadShape(SKYBOX_MODEL_PATH);
-    skyBoxTexture = loadImage(SKYBOX_TEXTURE_PATH);
-    skyBoxModel.setTexture(skyBoxTexture);
-    skyBoxModel.scale(skyBoxSize);
+    skySphereModel = loadShape(PLANET_MODEL_PATH);
+    skySphereTexture = loadImage(SKYSPHERE_TEXTURE_PATH);
+    skySphereModel.setTexture(skySphereTexture);
+    skySphereModel.scale(skyBoxSize);
     
     starModel = loadShape(PLANET_MODEL_PATH);
     starTexture = loadImage(STAR_TEXTURE_PATH);
@@ -43,7 +44,6 @@ class Background{
   private float hermit(float x) { return 3 * x * x - 2 * x * x * x; }
   
   private float getQuarter(float p1, float p2){
-    //return (p2 - p1) / 3;
     return (p2 - p1) / 6;
   }
   
@@ -53,7 +53,6 @@ class Background{
     float xTo = planetTo.getX();  
     float yTo = planetTo.getY();
     
-    //float l = random(0.0, 1.0);
     float l = 0.5;
     float distX = (1 - l) * xFrom + l * xTo;
     float distY = (1 - l) * yFrom + l * yTo;
@@ -106,10 +105,6 @@ class Background{
             map(paramT, 0f, 1f, planetFrom.getX(), planetTo.getX()), map(paramT, 0f, 1f, planetFrom.getY(), planetTo.getY()), 16,
             0, 0, -1);
 
-      //camera(0, 0, 300,
-      //      0, 0, 0,
-      //      0, 1, 0);
-
     } else {
       float xCam = getBezier2nd(planetFrom.getX(), middlePointBezierX, planetTo.getX(), hermit(paramT));
       float yCam = getBezier2nd(planetFrom.getY(), middlePointBezierY, planetTo.getY(), hermit(paramT));
@@ -133,10 +128,8 @@ class Background{
   
   public Signal drawBG(int planetMoveTo){
     noLights();
-    //lightSpecular(255, 255, 255);
     pushMatrix();
-    //translate(-skyBoxSize / 2, -skyBoxSize / 2, -skyBoxSize / 2);
-    shape(skyBoxModel);
+    shape(skySphereModel);
     popMatrix();
 
     lights();
@@ -146,7 +139,6 @@ class Background{
     rotateX(-PI/2);
     noStroke();
     fill(255,255,255, 255);
-    //sphere(100);
     hint(DISABLE_DEPTH_TEST);
     shape(starModel);
     hint(ENABLE_DEPTH_TEST);

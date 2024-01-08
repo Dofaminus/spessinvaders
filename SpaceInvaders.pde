@@ -51,11 +51,9 @@ Device DEVICE = Device.MOUSE;
 float PLANET_SIZE = 10.0f;
 float STAR_SIZE = 100.0f;
 
-int HEIGHT = 1080;
-int WIDTH = 1920;
-
-//float coeffX = 3;
-//float coeffY = 3;
+// These vars are overrided so you can use any number
+int HEIGHT = 0;
+int WIDTH = 0;
 
 float coeffX = 1;
 float coeffY = 1;
@@ -73,6 +71,8 @@ PShape ENEMY_STARSHIP_LOD3_MODEL;
 
 PShape HEALTH_DAMAGE_MODEL;
 PShape SHIELD_DAMAGE_MODEL;
+
+PFont UI_FONT;
 
 AudioController audioController;
 
@@ -100,8 +100,7 @@ byte[] pressedKeys = new byte[256];
 
 // --------------------------------------- FILE PATHS ---------------------------------------
 
-String SKYBOX_TEXTURE_PATH = "assets/background/skybox.png";
-String SKYBOX_MODEL_PATH = "assets/background/skybox.obj";
+String SKYSPHERE_TEXTURE_PATH = "assets/background/skysphere.png";
 
 String HEALTH_DAMAGE_TEXTURE_PATH = "assets/effects/damageTexture.png";
 String SHIELD_DAMAGE_TEXTURE_PATH = "assets/effects/shieldTexture.png";
@@ -110,7 +109,6 @@ String STAR_TEXTURE_PATH = "assets/starSystem/starWhite.jpg";
 String PLANET_TEXTURE_PATHS = "assets/starSystem/planets/";
 String PLANET_MODEL_PATH = "assets/starSystem/sphere3.obj";
 
-//String PLAYER_TEXTURE_PATH = "assets/starship/FighterFemboy.png";
 String PLAYER_TEXTURE_PATH = "assets/starship/Fighter2.png";
 String PLAYER_MODEL_PATH = "assets/starship/FIghter2.obj";
 
@@ -124,12 +122,6 @@ String ENEMY_MODEL_LOD1_PATH = "assets/starship/01_2.obj";
 String ENEMY_MODEL_LOD2_PATH = "assets/starship/01_3.obj";
 String ENEMY_MODEL_LOD0_PATH = "assets/starship/FIghter1_1.obj";
 
-String VICTORY_SCREEN = "assets/effects/victoryScreen.png";
-String GAMEOVER_SCREEN = "assets/effects/gameoverScreen.png";
-String CLEARED_SCREEN = "assets/effects/clearedScreen.png";
-String PREPARE_SCREEN = "assets/effects/prepareScreen.png";
-String RED_SCREEN = "assets/effects/redScreen.png";
-
 String CROSSHAIR_IMG_PATH = "assets/starship/crosshair.png";
 
 String SOUND_FLYING_LOOP_PATH = "assets/sounds/JetBoost_Loop.mp3";
@@ -138,6 +130,8 @@ String SOUND_SHOT_PATH = "assets/sounds/shot.mp3";
 String SOUND_DAMAGE_PATH = "assets/sounds/damage.mp3";
 String SOUND_EXPLOSION_PATH = "assets/sounds/damage.mp3";
 String MUSIC_BACKGROUND_PATH = "assets/sounds/galaxyx27s-edge-154425.mp3";
+
+String FONT_PATH = "assets/font/ShareTechMono-Regular-48.vlw";
 
 // --------------------------------------- END FILE PATHS ---------------------------------------
 
@@ -155,6 +149,9 @@ class Main{
 
   public Main(Minim minim){    
     loadModels();
+    
+    UI_FONT = loadFont(FONT_PATH);
+    textFont(UI_FONT);
 
     audioController = new AudioController( minim );
 

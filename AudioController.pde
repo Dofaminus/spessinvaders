@@ -46,7 +46,6 @@ class AudioController{
       startSound.play();
       started = true;
     } else if(!startSound.isPlaying() && !isLooped){
-      println("AAAAAAAAAAA");
       isLooped = true;
       loopSound.loop();
     }

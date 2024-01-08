@@ -17,7 +17,8 @@ class ActionField{
   private Control control;
   private ControlKeyboard controlKeyboard;
   private WaveGenerator waveGenerator;
-
+  private UIInfo uiInfo;
+  
   private int bulletTiming = 50;
   private int prepareTiming;
   private int clearedTiming;
@@ -29,17 +30,15 @@ class ActionField{
   private int enemyNumber;
   private List<Starship> waveList;
 
-  private PShape skyBoxModel;
-  private PImage skyBoxTexture;
+  private PShape skySphereModel;
+  private PImage skySphereTexture;
+
+
+  
   private float skyBoxSize = 17000f;
   private float skyBoxRotation;
   
   private PImage crosshair = loadImage(CROSSHAIR_IMG_PATH);
-  private PImage victoryScreen = loadImage(VICTORY_SCREEN);
-  private PImage gameoverScreen = loadImage(GAMEOVER_SCREEN);
-  private PImage clearedScreen = loadImage(CLEARED_SCREEN);
-  private PImage prepareScreen = loadImage(PREPARE_SCREEN);
-  private PImage redScreen = loadImage(RED_SCREEN);
 
   private int redScreenTiming = 0;
 
@@ -55,30 +54,33 @@ class ActionField{
   public ActionField(List<Planet> planets){
     bullets = new ArrayList<>();
     this.planets = planets;
-    skyBoxModel = loadShape(SKYBOX_MODEL_PATH);
-    skyBoxTexture = loadImage(SKYBOX_TEXTURE_PATH);
-    skyBoxModel.setTexture(skyBoxTexture);
-    skyBoxModel.scale(skyBoxSize);
+
+    skySphereModel = loadShape(PLANET_MODEL_PATH);
+    skySphereTexture = loadImage(SKYSPHERE_TEXTURE_PATH);
+    skySphereModel.setTexture(skySphereTexture);
+    skySphereModel.scale(skyBoxSize);
     
     waveGenerator = new WaveGenerator(-WIDTH, HEIGHT);
-
     mainStarship = new MainStarship(PLAYER_HEALTH, PLAYER_SHIELD);
-    
+
     if(DEVICE == Device.GAMEPAD){
       control = new Control();  
     } else if(DEVICE == Device.KEYBOARD){
       controlKeyboard = new ControlKeyboard();    
     }
   }
-
-  private void displayScreen(PImage texture){
+  
+  private void displayScreen(color bgColor, String text, color textColor){
     pushMatrix();
-    float scaleCoeff = 0.002;
-    translate(cam.getX() + WIDTH / 2 * scaleCoeff, cam.getY() - HEIGHT / 2 * scaleCoeff, cam.getZ()+1);
     rotateY(PI);
-    scale(scaleCoeff);
+    textSize(180);
+    
     hint(DISABLE_DEPTH_TEST);
-    image(texture, 0, 0);
+    fill(bgColor);
+    rect(-width, -height, 3*width, 3*height);
+    fill(textColor);
+    //text(text, - cam.getX() - 1.9 * width, - 1.8 * height + cam.getY(), - 2 * height);
+    text(text, - cam.getX(),cam.getY(), - 2 * height);
     hint(ENABLE_DEPTH_TEST);
     popMatrix();
   }
@@ -108,7 +110,8 @@ class ActionField{
     noLights();
     rotateY(skyBoxRotation);
     //translate(-skyBoxSize / 2, -skyBoxSize / 2, -skyBoxSize / 2);
-    shape(skyBoxModel);
+    //shape(skyBoxModel);
+    shape(skySphereModel);
     popMatrix();
     lights();
 
@@ -231,7 +234,8 @@ class ActionField{
 
           enemies.add(waveListGen);
         }
-        
+        uiInfo = new UIInfo(mainStarship, enemies);
+
         sd = new StarDrawer();
         
         state = ActionFieldState.PREPARING;
@@ -241,7 +245,9 @@ class ActionField{
       case PREPARING: 
         displayAllEnemies();
         displayAll();
-        displayScreen(prepareScreen);
+        //displayScreen(prepareScreen);
+        displayScreen(color(0,0,0, 180), "PREPARE", color(240,200,80));
+
         
         pushMatrix();
         preparingInfo.display(cam.getX() + WIDTH / 2, cam.getY() - HEIGHT / 2, cam.getZ()+10);
@@ -252,7 +258,8 @@ class ActionField{
           return Signal.CONTINUE;
       case CLEARED:
         displayAll();
-        displayScreen(clearedScreen);
+        //displayScreen(clearedScreen);
+        displayScreen(color(0,0,0, 180), "CLEARED", color(95,85,149));
         clearedTiming--;
         if(clearedTiming == 0){
           state = ActionFieldState.INIT;
@@ -261,11 +268,13 @@ class ActionField{
         return Signal.CONTINUE;
       case VICTORY:
         displayAll();
-        displayScreen(victoryScreen);
+        //displayScreen(victoryScreen);
+        displayScreen(color(0,0,0, 180), "VICTORY", color(102,185,42));
         audioController.stopLoopSounds(false);
         return Signal.CONTINUE;
       case GAMEOVER:
-        displayScreen(gameoverScreen);
+        //displayScreen(gameoverScreen);
+        displayScreen(color(0,0,0, 180), "GAME OVER", color(115,41,25));
         audioController.stopLoopSounds(true);
         return Signal.CONTINUE;
       default:
@@ -332,33 +341,37 @@ class ActionField{
         ss.frameMove();      
       }
     }
-    
+
     displayAllEnemies();
-    
+
     for(Starship ss: waveList){
         if(random(0, 100) < 1 * MULTIPLIER_FIRE_RATE_ENEMY){
           bullets.add(ss.shot());
         }
     }
-    
+
     if(waveList.isEmpty()){
       enemies.remove(0);
       if(!enemies.isEmpty()) waveList = enemies.get(0);
     }
-    
+
     if(!enemies.isEmpty())
       if(waveList.get(0).getPosZ() < 0){
         audioController.playOnceExplosion();
         state = ActionFieldState.GAMEOVER;
         return Signal.CONTINUE;      
       }
-      
+
     displayAll();
 
     if(redScreenTiming > 0){
       redScreenTiming--;
-      displayScreen(redScreen);
+      //displayScreen(redScreen);
+      displayScreen(color(255,0,0, 180), "DAMAGE!", color(0,0,0));
     }
+
+    uiInfo.display(cam.getX(), cam.getY(), cam.getZ());
+
     if(enemies.isEmpty()){
       if(currentLevel == planets.size() - 1){
         state = ActionFieldState.VICTORY;
